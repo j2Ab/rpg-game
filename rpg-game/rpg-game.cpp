@@ -67,6 +67,7 @@ int main()
         
         skeletoin.Draw(window);
         player.Draw(window);
+        window.draw(frameRateText);
 
         for (size_t i = 0; i < player.bullet.size(); i++)
         {
