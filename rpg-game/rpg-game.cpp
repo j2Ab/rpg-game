@@ -1,7 +1,9 @@
 #include "player.h"
 #include "Skeletoin.h"
 #include "Math.h"
-#include<iostream>
+#include "Time.h"
+
+#include <iostream>
 
 using namespace std;
 
@@ -13,8 +15,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!" , sf::Style::Default , setting);
     window.setFramerateLimit(60);
 
-    sf::Clock clock;
-    sf::Time deltatime;
+    Time time;
+    float deltaTime;
 
     sf::Text frameRateText;
     sf::Font font;
@@ -32,8 +34,10 @@ int main()
     Skeletoin skeletoin;
 
 
+
     skeletoin.initialize();
     player.initialize();
+
 
 
     skeletoin.load();
@@ -52,16 +56,12 @@ int main()
                 window.close();
         }
 
-    
-        deltatime = clock.getElapsedTime();
-        clock.restart();
-        float deltaTime = deltatime.asMilliseconds();
-        
+        time.deltaTime(deltaTime);
+       
         player.Update(skeletoin, deltaTime);
         skeletoin.Update(deltaTime);
-        // Frame Rates 
-        //"Frame : " << 1000.0f / deltaTime
-         frameRateText.setString("Frame Rates :  ");
+        time.updateFrame(frameRateText, deltaTime);
+
  //--------------------------------update----------------------------------------
         window.clear(sf::Color::Black);
         
