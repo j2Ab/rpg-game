@@ -1,12 +1,13 @@
 #include "player.h"
 #include "Skeletoin.h"
 #include "Math.h"
+#include "bullet.h"
 #include <iostream>
 
 
 using namespace std;
 
-Player::Player() : fireRateTimer(0), maxFire(150) {
+Player::Player() : fireRateTimer(1), maxFire(50) {
 		
 }
 
@@ -40,9 +41,13 @@ void Player::initialize() {
 void Player::Draw(sf::RenderWindow& window){
 	window.draw(sprite);
 	window.draw(BoundingBox);
+	for (size_t i = 0; i < bullets.size(); i++)
+	{
+		bullets[i].Draw(window);
+	}
 
 }
-void Player::Update(Skeletoin& Skeletoin, float deltaTime) {
+void Player::Update(Skeletoin& Skeletoin, float deltaTime,sf::Vector2f mousePosition) {
 
 	sf::Vector2f position = sprite.getPosition();
 
@@ -62,24 +67,24 @@ void Player::Update(Skeletoin& Skeletoin, float deltaTime) {
 	fireRateTimer += deltaTime;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && fireRateTimer >= maxFire) {
 
-		bullet.push_back(sf::RectangleShape(sf::Vector2f(30, 25)));
-		bullet[bullet.size() - 1].setPosition(sprite.getPosition());
+		bullets.push_back(bullet());
+		int i = bullets.size() - 1;
+		bullets[i].initialize(sprite.getPosition(), mousePosition ,2.0f);
 
 		fireRateTimer = 0;
 	}
 
 
-	for (size_t i = 0; i < bullet.size(); i++)
+	for (size_t i = 0; i < bullets.size(); i++)
 	{
-		sf::Vector2f D_bullet = Skeletoin.sprite.getPosition() - bullet[i].getPosition();
-		D_bullet = Math::NormalizedVector(D_bullet);
-		bullet[i].setPosition(bullet[i].getPosition() + D_bullet * b_speed * deltaTime);
 
-		if (Math::DidItCollied(bullet[i].getGlobalBounds(), Skeletoin.sprite.getGlobalBounds())) {
+		bullets[i].Update(deltaTime);
+
+		if (Math::DidItCollied(bullets[i].GetGloableBounds(), Skeletoin.sprite.getGlobalBounds())) {
 			
 			Skeletoin.ChangeHp(-10);
 
-			bullet.erase(bullet.begin() + i);
+			bullets.erase(bullets.begin() + i);
 			cout << "skeleton Health " << Skeletoin.Hp << endl;
 		}
 		

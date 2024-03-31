@@ -43,7 +43,6 @@ int main()
     skeletoin.load();
     player.load();
 
-
     
 //--------------------------------------game loop----------------------------------------
 
@@ -56,9 +55,11 @@ int main()
                 window.close();
         }
 
+    sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
+
         time.deltaTime(deltaTime);
        
-        player.Update(skeletoin, deltaTime);
+        player.Update(skeletoin, deltaTime, mousePosition);
         skeletoin.Update(deltaTime);
         time.updateFrame(frameRateText, deltaTime);
 
@@ -69,10 +70,7 @@ int main()
         player.Draw(window);
         window.draw(frameRateText);
 
-        for (size_t i = 0; i < player.bullet.size(); i++)
-        {
-            window.draw(player.bullet[i]);
-        }
+    
 
         window.display();
     }
