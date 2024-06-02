@@ -9,6 +9,7 @@ game::game()
 	this->initTexture();
 	this->initEnemie();
 	this->initGUI();
+	this->initWorldBackground();
 }
 
 game::~game()
@@ -95,20 +96,38 @@ void game::updateEnemie()
 				this->enemies.erase(this->enemies.begin() + i);
 				flag = true;
 			}
-
-
 		}
 
 		if (!flag) {
 
-					if (this->enemies.at(i)->getBound().top > this->window->getSize().y) {
-						this->enemies.erase(this->enemies.begin() + i);
-						std::cout << this->enemies.size();
-					}
+		if (this->enemies.at(i)->getBound().top > this->window->getSize().y) {
+			this->enemies.erase(this->enemies.begin() + i);
+			std::cout << this->enemies.size();
+		}
 				
 				}
 	}
-	
+}
+
+void game::renderbackground()
+{
+	this->window->draw(this->backgroundWorld);
+}
+
+void game::checkCollision()
+{
+	if (this->player->getBounds().left < 0.f) {
+		this->player->setPos(0.f, this->player->getBounds().top);
+	}
+	else if (this->player->getBounds().left + this->player->getBounds().width >= this->window->getSize().x) {
+		this->player->setPos(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top);
+	}
+	if (this->player->getBounds().top < 0.f) {
+		this->player->setPos(this->player->getBounds().left, 0.f);
+	}
+	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y) {
+		this->player->setPos(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height);
+	}
 
 }
 
@@ -182,6 +201,15 @@ void game::initGUI()
 	this->pointText.setString("A Font");
 }
 
+void game::initWorldBackground()
+{
+	if (!this->backgorundTexture.loadFromFile("Assets/player/texture/bg.jpg")) {
+		std::cout << "Cant load BAckgorund" << std::endl;
+	}
+	this->backgroundWorld.setTexture(this->backgorundTexture);
+	this->backgroundWorld.setScale(0.35f, 0.35f);
+}
+
 
 // Function 
 void game::run()
@@ -195,9 +223,11 @@ void game::run()
 
 void game::update()
 {
+
 	this->player->update();
 	this->updatePollEvent();
 	this->updateMovement();
+	this->checkCollision();
 	this->updateBullet();
 	this->updateEnemie();
 }
@@ -207,6 +237,7 @@ void game::render()
 	this->window->clear();
 
 	// Draw it 
+	this->renderbackground();
 	this->player->render(*this->window);
 
 	for (auto* i : this->bullets) {

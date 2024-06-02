@@ -24,10 +24,14 @@ public :
 	
 	const sf::FloatRect getBounds() const ;
 	sf::Vector2f getPos();
+
+	//Modifirers 
+	void setPos(float x , float y);
+
+
 	void PlayerMove(float DirX , float DirY);
 	void updateAttack();
 	bool CanAttack();
-
 	void SetPos(float PosX, float PosY);
 	void update();
 	void render(sf::RenderTarget& target) ;

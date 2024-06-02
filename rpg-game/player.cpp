@@ -45,6 +45,11 @@ sf::Vector2f Player::getPos()
 	return this->sprite.getPosition();
 }
 
+void Player::setPos(float x, float y)
+{
+	this->sprite.setPosition(x, y);
+}
+
 void Player::PlayerMove(float DirX, float DirY)
 {
 	this->sprite.move(this->movementSpeed * DirX, this->movementSpeed * DirY);

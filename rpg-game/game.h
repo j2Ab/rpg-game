@@ -15,6 +15,12 @@ class game
 private : 
 	sf::RenderWindow* window;
 
+	// BackGround World
+
+	sf::Sprite backgroundWorld;
+	sf::Texture backgorundTexture;
+
+
 	// GUI 
 	
 	sf::Font font;
@@ -39,13 +45,14 @@ private :
 	void initPlayer();
 	void initEnemie();
 	void initGUI();
+	void initWorldBackground();
 
 public :
 	game();
 	virtual ~game();
 
-
-	
+	void renderbackground();
+	void checkCollision();
 	void renderGui();
 	void updateBullet();
 	void updatePollEvent();
