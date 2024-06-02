@@ -8,16 +8,27 @@ private :
 
 	sf::Sprite sprite;
 	sf::Texture texture;
+	float movementSpeed;
+	float bulletCoolDown;
+	float bulletCoolDownMax;
 
 
 	void initSprite();
+	void initVariables();
 	void initTexture();
 
 public :
 
 	Player();
 	virtual ~Player();
+	
+	const sf::FloatRect getBounds() const ;
+	sf::Vector2f getPos();
+	void PlayerMove(float DirX , float DirY);
+	void updateAttack();
+	bool CanAttack();
 
+	void SetPos(float PosX, float PosY);
 	void update();
 	void render(sf::RenderTarget& target) ;
 
