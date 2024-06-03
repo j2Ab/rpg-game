@@ -5,7 +5,7 @@ class enemie
 {
 private :
 		
-	sf::CircleShape shape;
+	sf::Sprite shape;
 	int hp;
 	int hpMax;
 	int damge;
@@ -20,11 +20,14 @@ private :
 
 public : 
 	enemie();
-	enemie(float PosX, float PosY);
+	enemie(float PosX, float PosY, sf::Texture* texture);
 	~enemie();
 
 	const sf::FloatRect getBound() const;
-
+	float randNumber();
+	void setRotaion(float rot);
+	float getRota();
+	void getPoints(int& p);
 	void render(sf::RenderTarget* target);
 	void update();
 };

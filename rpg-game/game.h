@@ -31,6 +31,9 @@ private :
 
 	// Enemy stuff
 	std::vector<enemie*> enemies;
+	std::map<std::string, sf::Texture*> Etexture;
+
+	// Time spawn controlers
 	float spawnTimer;
 	float spawnTimerMax;
 	
@@ -40,6 +43,13 @@ private :
 	std::vector<Bullet*> bullets;
 
 
+	int p;
+
+
+	bool autoPlay;
+
+	
+	void initVariable();
 	void initTexture();
 	void initWindow();
 	void initPlayer();
@@ -50,6 +60,8 @@ private :
 public :
 	game();
 	virtual ~game();
+
+	std::string randomStrings();
 
 	void renderbackground();
 	void checkCollision();

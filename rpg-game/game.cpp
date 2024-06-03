@@ -10,6 +10,7 @@ game::game()
 	this->initEnemie();
 	this->initGUI();
 	this->initWorldBackground();
+	this->initVariable();
 }
 
 game::~game()
@@ -38,8 +39,17 @@ void game::updatePollEvent()
 		}
 		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape) {
 			this->window->close();
+		}if (e.type == sf::Event::KeyPressed) {
+
 		}
 	}
+}
+std::string game::randomStrings()
+{
+	sf::String randomString[] = {"bg1" , "bg2" , "bg3" , "bg4"};
+	int randomVar = rand() % 4;
+
+	return randomString[randomVar];
 }
 void game::updateMovement()
 {
@@ -57,7 +67,16 @@ void game::updateMovement()
 		this->player->PlayerMove(0, -1.0f);
 	}
 
-	if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && this->player->CanAttack()) {
+	
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+		autoPlay = true;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
+		autoPlay = false;
+	}	
+
+	if (((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && this->player->CanAttack()) || (autoPlay && this->player->CanAttack() )) {
 		this->bullets.push_back
 		(
 			new Bullet(this->texture["BULLET"],
@@ -68,16 +87,23 @@ void game::updateMovement()
 			10.0f)
 		);
 	}
+
 }
 
 void game::updateEnemie()
 {
+	for (auto* i : this->enemies) {
+
+		float increRot = i->getRota();
+		increRot += 0.1;
+		i->setRotaion(increRot);
+	}
 
 	// Creating enemy at random position with use of spawan Timer we can control when this spawn thing will going to happen
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax) {
 
-		this->enemies.push_back(new enemie(rand()% this->window->getSize().x - 40.f, -150.f));
+		this->enemies.push_back(new enemie(rand()% this->window->getSize().x - 40.f, -200.f , this->Etexture["ETexture"]));
 		this->spawnTimer = 0.f;
 	}
 
@@ -95,7 +121,9 @@ void game::updateEnemie()
 				this->bullets.erase(this->bullets.begin() + k);
 				this->enemies.erase(this->enemies.begin() + i);
 				flag = true;
+				p = p + 1;
 			}
+
 		}
 
 		if (!flag) {
@@ -104,8 +132,12 @@ void game::updateEnemie()
 			this->enemies.erase(this->enemies.begin() + i);
 			std::cout << this->enemies.size();
 		}
+		if (this->player->getBounds().intersects(this->enemies.at(i)->getBound())) {
+			this->enemies.erase(this->enemies.begin() + i);
+		}
 				
-				}
+		}
+
 	}
 }
 
@@ -116,12 +148,18 @@ void game::renderbackground()
 
 void game::checkCollision()
 {
-	if (this->player->getBounds().left < 0.f) {
-		this->player->setPos(0.f, this->player->getBounds().top);
+
+	// looping through X coordinates
+
+	if (this->player->getBounds().left + this->player->getBounds().width < 0.f) {
+		this->player->setPos(this->window->getSize().x, this->player->getBounds().top);
 	}
-	else if (this->player->getBounds().left + this->player->getBounds().width >= this->window->getSize().x) {
-		this->player->setPos(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top);
+	else if (this->player->getBounds().left > this->window->getSize().x) {
+		this->player->setPos(-(this->player->getBounds().width), this->player->getBounds().top);
 	}
+	
+
+	// checking collison top and bottom
 	if (this->player->getBounds().top < 0.f) {
 		this->player->setPos(this->player->getBounds().left, 0.f);
 	}
@@ -160,12 +198,19 @@ void game::updateBullet()
 }
 // Private Fucitons
 
+void game::initVariable()
+{
+	autoPlay = false;
+	p = 0;
+}
+
 void game::initTexture()
 {
 	this->texture["BULLET"] = new sf::Texture();
 	if(!this->texture["BULLET"]->loadFromFile("Assets/player/texture/bullet.png")) {
 		std::cout << "Bullet texture is not loaded" << "\n";
 	}
+
 }
 
 void game::initWindow()
@@ -184,9 +229,12 @@ void game::initPlayer()
 
 void game::initEnemie()
 {
-	this->spawnTimerMax = 20.0f;
+	this->Etexture["ETexture"] = new sf::Texture();
+	if (!this->Etexture["ETexture"]->loadFromFile("Assets/player/texture/bg1.png")) {
+		std::cout << "Game :: rock error" << std::endl;
+	}
+	this->spawnTimerMax = 25.0f;
 	this->spawnTimer = this->spawnTimerMax;
-	
 }
 
 void game::initGUI()
@@ -198,16 +246,29 @@ void game::initGUI()
 	this->pointText.setFont(this->font);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setCharacterSize(15);
-	this->pointText.setString("A Font");
+	this->pointText.setString("Points : ");
 }
 
 void game::initWorldBackground()
 {
+
+
 	if (!this->backgorundTexture.loadFromFile("Assets/player/texture/bg.jpg")) {
 		std::cout << "Cant load BAckgorund" << std::endl;
 	}
+
+	float winSizeX = this->window->getSize().x;
+	float winSizeY = this->window->getSize().y;
+
+	float textureX = this->backgorundTexture.getSize().x;
+	float textureY = this->backgorundTexture.getSize().y;
+
+	float facX = winSizeX / textureX;
+	float facY = winSizeY / textureY;
+ 	
 	this->backgroundWorld.setTexture(this->backgorundTexture);
-	this->backgroundWorld.setScale(0.35f, 0.35f);
+	this->backgroundWorld.setScale(facX , facY);
+
 }
 
 
