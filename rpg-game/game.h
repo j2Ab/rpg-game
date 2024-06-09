@@ -66,6 +66,7 @@ public :
 	void renderbackground();
 	void checkCollision();
 	void renderGui();
+	void updateGUI();
 	void updateBullet();
 	void updatePollEvent();
 	void updateMovement();

@@ -28,6 +28,11 @@ game::~game()
 		delete i;
 	}
 }
+void game::updateGUI()
+{
+	this->pointText.setString("Points : " + p);
+
+}
 
 void game::updatePollEvent()
 {
@@ -216,7 +221,7 @@ void game::initTexture()
 void game::initWindow()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "Swagii", sf::Style::Fullscreen);
-	this->window->setFramerateLimit(144);
+	this->window->setFramerateLimit(240);
 	this->window->setVerticalSyncEnabled(false);
 }
 
@@ -246,7 +251,6 @@ void game::initGUI()
 	this->pointText.setFont(this->font);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setCharacterSize(15);
-	this->pointText.setString("Points : ");
 }
 
 void game::initWorldBackground()
@@ -289,6 +293,7 @@ void game::update()
 	this->updatePollEvent();
 	this->updateMovement();
 	this->checkCollision();
+	this->updateGUI();
 	this->updateBullet();
 	this->updateEnemie();
 }
@@ -311,3 +316,5 @@ void game::render()
 	this->renderGui();
 	this->window->display();
 }
+
+
