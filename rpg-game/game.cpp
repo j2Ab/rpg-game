@@ -135,7 +135,6 @@ void game::updateEnemie()
 
 		if (this->enemies.at(i)->getBound().top > this->window->getSize().y) {
 			this->enemies.erase(this->enemies.begin() + i);
-			std::cout << this->enemies.size();
 		}
 		if (this->player->getBounds().intersects(this->enemies.at(i)->getBound())) {
 			this->enemies.erase(this->enemies.begin() + i);
@@ -194,7 +193,6 @@ void game::updateBullet()
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
-			std::cout << this->bullets.size() << std::endl;
 		}
 
 		++counter;
@@ -244,7 +242,6 @@ void game::initEnemie()
 
 void game::initGUI()
 {
-	std::cout << "Font Loaded" << std::endl;
 	if (!this->font.loadFromFile("Assets/fonts/arial.ttf")) {
 		std::cout << "GAME::Font not loaded" << std::endl;
 	}
@@ -296,6 +293,7 @@ void game::update()
 	this->updateGUI();
 	this->updateBullet();
 	this->updateEnemie();
+	std::cout << "point : "<<  p << std::endl;
 }
 
 void game::render()
@@ -313,7 +311,6 @@ void game::render()
 	for (auto* enemy : this->enemies) {
 		enemy->render(this->window);
 	}
-	this->renderGui();
 	this->window->display();
 }
 
